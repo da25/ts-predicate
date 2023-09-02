@@ -1,42 +1,18 @@
-import { Delays, greeter } from '../src/main.js';
+import { atLeast, atMost, every, hasSize, includes, none, some } from '../src/utils/array-utils.js';
+import { greaterThan, lessThan } from '../src/utils/number-utils.js';
+import { equalTo } from '../src/utils/object-utils.js';
 
 describe('greeter function', () => {
-  const name = 'John';
-  let hello: string;
 
-  let timeoutSpy: jest.SpyInstance;
-
-  // Act before assertions
-  beforeAll(async () => {
-    // Read more about fake timers
-    // http://facebook.github.io/jest/docs/en/timer-mocks.html#content
-    // Jest 27 now uses "modern" implementation of fake timers
-    // https://jestjs.io/blog/2021/05/25/jest-27#flipping-defaults
-    // https://github.com/facebook/jest/pull/5171
-    jest.useFakeTimers();
-    timeoutSpy = jest.spyOn(global, 'setTimeout');
-
-    const p: Promise<string> = greeter(name);
-    jest.runOnlyPendingTimers();
-    hello = await p;
-  });
-
-  // Teardown (cleanup) after assertions
-  afterAll(() => {
-    timeoutSpy.mockRestore();
-  });
-
-  // Assert if setTimeout was called properly
-  it('delays the greeting by 2 seconds', () => {
-    expect(setTimeout).toHaveBeenCalledTimes(1);
-    expect(setTimeout).toHaveBeenLastCalledWith(
-      expect.any(Function),
-      Delays.Long,
-    );
-  });
-
-  // Assert greeter result
-  it('greets a user with `Hello, {name}` message', () => {
-    expect(hello).toBe(`Hello, ${name}`);
+  it('test array utils', () => {
+    const arr: number[] = [2, 5, 9, 4, 7];
+    expect(includes(1).test(arr)).toBeFalsy();
+    expect(includes(5).test(arr)).toBeTruthy();
+    expect(every(lessThan(10)).test(arr)).toBeTruthy();
+    expect(some(greaterThan(6)).test(arr)).toBeTruthy();
+    expect(none(greaterThan(10)).test(arr)).toBeTruthy();
+    expect(atLeast(greaterThan(6), 2).test(arr)).toBeTruthy();
+    expect(atMost(lessThan(6), 3).test(arr)).toBeTruthy();
+    expect(hasSize(equalTo(5)).test(arr)).toBeTruthy();
   });
 });
