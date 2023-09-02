@@ -7,40 +7,40 @@ export function hasSize<T>(sizePredicate: Predicate<number>): Predicate<Array<T>
   return hasProperty<Array<T>, 'length'>('length', sizePredicate);
 }
 
-export function every<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
-  return count<T>(itemPredicate, (value: Array<T>) => equalTo(value.length));
+export function everyItem<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
+  return countItems<T>(itemPredicate, (value: Array<T>) => equalTo(value.length));
 }
 
-export function some<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
-  return count<T>(itemPredicate, greaterThan(0));
+export function someItems<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
+  return countItems<T>(itemPredicate, greaterThan(0));
 }
 
-export function none<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
-  return count<T>(itemPredicate, equalTo(0));
+export function noneItems<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
+  return countItems<T>(itemPredicate, equalTo(0));
 }
 
-export function atLeast<T>(itemPredicate: Predicate<T>, occurrenceCount: number): Predicate<Array<T>> {
-  return count<T>(itemPredicate, greaterThanOrEqualTo(occurrenceCount));
+export function atLeastItems<T>(itemPredicate: Predicate<T>, occurrenceCount: number): Predicate<Array<T>> {
+  return countItems<T>(itemPredicate, greaterThanOrEqualTo(occurrenceCount));
 }
 
-export function atMost<T>(itemPredicate: Predicate<T>, occurrenceCount: number): Predicate<Array<T>> {
-  return count<T>(itemPredicate, lessThanOrEqualTo(occurrenceCount));
+export function atMostItems<T>(itemPredicate: Predicate<T>, occurrenceCount: number): Predicate<Array<T>> {
+  return countItems<T>(itemPredicate, lessThanOrEqualTo(occurrenceCount));
 }
 
-export function includes<T>(item: T): Predicate<Array<T>> {
-  return some<T>(equalTo<T>(item));
+export function includesItem<T>(item: T): Predicate<Array<T>> {
+  return someItems<T>(equalTo<T>(item));
 }
 
 // export function count<T>(itemPredicate: Predicate<T>, countPredicate: Predicate<number>): Predicate<Array<T>>;
 // export function count<T>(itemPredicate: Predicate<T>, countPredicate: (value: Array<T>) => Predicate<number>): Predicate<Array<T>>;
-export function count<T>(
+export function countItems<T>(
   itemPredicate: Predicate<T>,
   countPredicate: Predicate<number> | ((value: Array<T>) => Predicate<number>)
 ): Predicate<Array<T>> {
   const reducer: ReducerFunction<T, number> = (count: number, item: T): number =>
     itemPredicate.test(item) ? count + 1 : count;
 
-  return reduce<T, number>(countPredicate, reducer, 0);
+  return reduceItems<T, number>(countPredicate, reducer, 0);
 }
 
 // export function reduce<T, U = T>(
@@ -71,7 +71,7 @@ export function count<T>(
 //   reducer: ReducerFunction<T, U>,
 //   initialValue: U
 // ): Predicate<Array<T>>;
-export function reduce<T, U>(
+export function reduceItems<T, U>(
   reducedPredicate: Predicate<U> | ((value: Array<T>) => Predicate<U>),
   reducer: ReducerFunction<T, U>,
   initialValue?: U
