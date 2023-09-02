@@ -1,9 +1,16 @@
-import { atLeastItems, atMostItems, everyItem, hasSize, includesItem, noneItems, someItems } from '../src/utils/array-utils.js';
+import {
+  atLeastItems,
+  atMostItems,
+  everyItem,
+  hasSize,
+  includesItem,
+  noneItems,
+  someItems,
+} from '../src/utils/array-utils.js';
 import { greaterThan, lessThan } from '../src/utils/number-utils.js';
 import { equalTo } from '../src/utils/object-utils.js';
 
 describe('greeter function', () => {
-
   it('test array utils', () => {
     const arr: number[] = [2, 5, 9, 4, 7];
     expect(includesItem(1).test(arr)).toBeFalsy();

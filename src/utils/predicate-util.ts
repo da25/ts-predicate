@@ -5,7 +5,10 @@ export function predicate<T>(predicateFn: PredicateFunction<T>): Predicate<T> {
   return Predicate.of<T>(predicateFn);
 }
 
-export function then<T, U>(mapperFn: (value: T) => U, predicate: Predicate<U>): Predicate<T> {
+export function then<T, U>(
+  mapperFn: (value: T) => U,
+  predicate: Predicate<U>,
+): Predicate<T> {
   return Predicate.from<T, U>(mapperFn, predicate);
 }
 
