@@ -31,8 +31,6 @@ export class Predicate<T> {
     return new Predicate<T>(predicateFn);
   }
 
-  // static from<T, U>(mapperFn: (value: T) => U, predicate: Predicate<U>): Predicate<T>;
-  // static from<T, U>(mapperFn: (value: T) => U, predicateMapperFn: (value: T) => Predicate<U>): Predicate<T>;
   static from<T, U>(
     mapperFn: (value: T) => U,
     predicateOrMapperFn: Predicate<U> | ((value: T) => Predicate<U>),
