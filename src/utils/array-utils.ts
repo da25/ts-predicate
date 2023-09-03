@@ -13,6 +13,10 @@ export function hasSize<T>(
   return hasProperty<Array<T>, 'length'>('length', sizePredicate);
 }
 
+export function isEmptyArray<T>(): Predicate<Array<T>> {
+  return hasSize<T>(equalTo(0));
+}
+
 export function everyItem<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
   return countItems<T>(itemPredicate, (value: Array<T>) =>
     equalTo(value.length),
@@ -41,8 +45,8 @@ export function atMostItems<T>(
   return countItems<T>(itemPredicate, lessThanOrEqualTo(occurrenceCount));
 }
 
-export function includesItem<T>(item: T): Predicate<Array<T>> {
-  return someItems<T>(equalTo<T>(item));
+export function includesItem<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
+  return someItems<T>(itemPredicate);
 }
 
 // export function count<T>(itemPredicate: Predicate<T>, countPredicate: Predicate<number>): Predicate<Array<T>>;

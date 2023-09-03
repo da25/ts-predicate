@@ -13,8 +13,8 @@ import { equalTo } from '../src/utils/object-utils.js';
 describe('greeter function', () => {
   it('test array utils', () => {
     const arr: number[] = [2, 5, 9, 4, 7];
-    expect(includesItem(1).test(arr)).toBeFalsy();
-    expect(includesItem(5).test(arr)).toBeTruthy();
+    expect(includesItem(equalTo(1)).test(arr)).toBeFalsy();
+    expect(includesItem(equalTo(5)).test(arr)).toBeTruthy();
     expect(everyItem(lessThan(10)).test(arr)).toBeTruthy();
     expect(someItems(greaterThan(6)).test(arr)).toBeTruthy();
     expect(noneItems(greaterThan(10)).test(arr)).toBeTruthy();
