@@ -11,7 +11,7 @@ import { even, greaterThan, lessThan, withinBound } from '../src/utils/number-ut
 import { equalTo } from '../src/utils/object-utils.js';
 import { allOf } from '../src/utils/predicate-util.js';
 
-describe('greeter function', () => {
+describe('predicates', () => {
   let arr: number[];
 
   beforeEach(() => {
