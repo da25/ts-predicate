@@ -49,8 +49,8 @@ export function includesItem<T>(itemPredicate: Predicate<T>): Predicate<Array<T>
   return someItems<T>(itemPredicate);
 }
 
-// export function count<T>(itemPredicate: Predicate<T>, countPredicate: Predicate<number>): Predicate<Array<T>>;
-// export function count<T>(itemPredicate: Predicate<T>, countPredicate: (value: Array<T>) => Predicate<number>): Predicate<Array<T>>;
+export function count<T>(itemPredicate: Predicate<T>, countPredicate: Predicate<number>): Predicate<Array<T>>;
+export function count<T>(itemPredicate: Predicate<T>, countPredicate: (value: Array<T>) => Predicate<number>): Predicate<Array<T>>;
 export function countItems<T>(
   itemPredicate: Predicate<T>,
   countPredicate: Predicate<number> | ((value: Array<T>) => Predicate<number>),
@@ -63,34 +63,34 @@ export function countItems<T>(
   return reduceItems<T, number>(countPredicate, reducer, 0);
 }
 
-// export function reduce<T, U = T>(
-//   reducedPredicate: Predicate<U>,
-//   reducer: ReducerFunction<T, U>,
-// ): Predicate<Array<T>>;
-// export function reduce<T, U = T>(
-//   reducedPredicate: Predicate<U>,
-//   reducer: ReducerFunction<T, U>,
-//   initialValue: U
-// ): Predicate<Array<T>>;
-// export function reduce<T, U = T>(
-//   reducedPredicate: (value: Array<T>) => Predicate<U>,
-//   reducer: ReducerFunction<T, U>,
-// ): Predicate<Array<T>>;
-// export function reduce<T, U = T>(
-//   reducedPredicate: (value: Array<T>) => Predicate<U>,
-//   reducer: ReducerFunction<T, U>,
-//   initialValue: U
-// ): Predicate<Array<T>>;
-// export function reduce<T, U>(
-//   reducedPredicate: Predicate<U>,
-//   reducer: ReducerFunction<T, U>,
-//   initialValue: U
-// ): Predicate<Array<T>>;
-// export function reduce<T, U>(
-//   reducedPredicate: (value: Array<T>) => Predicate<U>,
-//   reducer: ReducerFunction<T, U>,
-//   initialValue: U
-// ): Predicate<Array<T>>;
+export function reduce<T, U = T>(
+  reducedPredicate: Predicate<U>,
+  reducer: ReducerFunction<T, U>,
+): Predicate<Array<T>>;
+export function reduce<T, U = T>(
+  reducedPredicate: Predicate<U>,
+  reducer: ReducerFunction<T, U>,
+  initialValue: U
+): Predicate<Array<T>>;
+export function reduce<T, U = T>(
+  reducedPredicate: (value: Array<T>) => Predicate<U>,
+  reducer: ReducerFunction<T, U>,
+): Predicate<Array<T>>;
+export function reduce<T, U = T>(
+  reducedPredicate: (value: Array<T>) => Predicate<U>,
+  reducer: ReducerFunction<T, U>,
+  initialValue: U
+): Predicate<Array<T>>;
+export function reduce<T, U>(
+  reducedPredicate: Predicate<U>,
+  reducer: ReducerFunction<T, U>,
+  initialValue: U
+): Predicate<Array<T>>;
+export function reduce<T, U>(
+  reducedPredicate: (value: Array<T>) => Predicate<U>,
+  reducer: ReducerFunction<T, U>,
+  initialValue: U
+): Predicate<Array<T>>;
 export function reduceItems<T, U>(
   reducedPredicate: Predicate<U> | ((value: Array<T>) => Predicate<U>),
   reducer: ReducerFunction<T, U>,

@@ -13,7 +13,6 @@ export function isUndefined<T>(): Predicate<T | undefined> {
 }
 
 export function hasProperty<T, K extends keyof T = keyof T>(
-  // eslint-disable-next-line @typescript-eslint/ban-types
   property: T[K] extends Function ? never : K,
   propertyPredicate: Predicate<T[K]>,
 ): Predicate<T> {
