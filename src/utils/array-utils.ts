@@ -1,11 +1,7 @@
 import { Predicate } from '../predicate.js';
 import { equalTo, hasProperty } from './object-utils.js';
-import {
-  greaterThan,
-  greaterThanOrEqualTo,
-  lessThanOrEqualTo,
-} from './number-utils.js';
-import { ReducerFunction } from '../types.js';
+import { greaterThanOrEqualTo, lessThanOrEqualTo } from './number-utils.js';
+import { not } from './predicate-util.js';
 
 export function hasSize<T>(
   sizePredicate: Predicate<number>,
@@ -18,17 +14,19 @@ export function isEmptyArray<T>(): Predicate<Array<T>> {
 }
 
 export function everyItem<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
-  return countItems<T>(itemPredicate, (value: Array<T>) =>
-    equalTo(value.length),
+  return Predicate.of<Array<T>>((value: Array<T>) =>
+    value.every((item: T) => itemPredicate.test(item)),
   );
 }
 
 export function someItems<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
-  return countItems<T>(itemPredicate, greaterThan(0));
+  return Predicate.of<Array<T>>((value: Array<T>) =>
+    value.some((item: T) => itemPredicate.test(item)),
+  );
 }
 
 export function noneItems<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
-  return countItems<T>(itemPredicate, equalTo(0));
+  return not(someItems(itemPredicate));
 }
 
 export function atLeastItems<T>(
@@ -45,35 +43,23 @@ export function atMostItems<T>(
   return countItems<T>(itemPredicate, lessThanOrEqualTo(occurrenceCount));
 }
 
-export function includesItem<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
+export function includesItem<T>(
+  itemPredicate: Predicate<T>,
+): Predicate<Array<T>> {
   return someItems<T>(itemPredicate);
 }
 
 export function countItems<T>(
   itemPredicate: Predicate<T>,
-  countPredicate: Predicate<number> | ((value: Array<T>) => Predicate<number>),
+  countPredicate: Predicate<number>,
 ): Predicate<Array<T>> {
-  const reducer: ReducerFunction<T, number> = (
-    count: number,
-    item: T,
-  ): number => (itemPredicate.test(item) ? count + 1 : count);
-
-  return reduceItems<T, number>(countPredicate, reducer, 0);
-}
-
-export function reduceItems<T, U>(
-  reducedPredicate: Predicate<U> | ((value: Array<T>) => Predicate<U>),
-  reducer: ReducerFunction<T, U>,
-  initialValue?: U,
-): Predicate<Array<T>> {
-  return Predicate.from<Array<T>, U>((value: Array<T>) => {
-    if (initialValue === undefined || initialValue === null) {
-      if (value.length > 0) {
-        initialValue = value.shift() as unknown as U;
-      } else {
-        throw Error('No initialValue provided and array is empty');
-      }
-    }
-    return value.reduce<U>(reducer, initialValue);
-  }, reducedPredicate);
+  return Predicate.from<Array<T>, number>(
+    (value: Array<T>) =>
+      value.reduce<number>(
+        (count: number, currentItem: T) =>
+          itemPredicate.test(currentItem) ? count + 1 : count,
+        0,
+      ),
+    countPredicate,
+  );
 }

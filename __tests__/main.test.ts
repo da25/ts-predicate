@@ -7,7 +7,12 @@ import {
   noneItems,
   someItems,
 } from '../src/utils/array-utils.js';
-import { even, greaterThan, lessThan, withinBound } from '../src/utils/number-utils.js';
+import {
+  even,
+  greaterThan,
+  lessThan,
+  withinBound,
+} from '../src/utils/number-utils.js';
 import { equalTo } from '../src/utils/object-utils.js';
 import { allOf } from '../src/utils/predicate-util.js';
 
@@ -32,22 +37,15 @@ describe('predicates', () => {
 
   it('should work with complex predicates', () => {
     expect(
-      allOf([
-        everyItem(withinBound(0, 10)),
-        someItems(even())
-      ]).test(arr)
+      allOf([everyItem(withinBound(0, 10)), someItems(even())]).test(arr),
     ).toBeTruthy();
   });
 
   it('should test everyItem(withinBound))', () => {
-    expect(
-      everyItem(withinBound(0, 10)).test(arr)
-    ).toBeTruthy()
+    expect(everyItem(withinBound(0, 10)).test(arr)).toBeTruthy();
   });
 
   it('should test someItems(even())', () => {
-    expect(
-      someItems(even())
-    ).toBeTruthy()
+    expect(someItems(even())).toBeTruthy();
   });
 });

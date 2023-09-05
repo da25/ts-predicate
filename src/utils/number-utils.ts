@@ -1,6 +1,6 @@
 import { Predicate } from '../predicate.js';
 import { equalTo } from './object-utils.js';
-import { allOf, anyOf, not } from './predicate-util.js';
+import { not } from './predicate-util.js';
 
 export function lessThan<T extends number, U extends number>(
   comparisonValue: U,
@@ -17,29 +17,22 @@ export function greaterThan<T extends number, U extends number>(
 export function greaterThanOrEqualTo<T extends number, U extends number>(
   comparisonValue: U,
 ): Predicate<T> {
-  return anyOf([
-    greaterThan<number, number>(comparisonValue),
-    equalTo<number>(comparisonValue)
-  ]);
+  return Predicate.of<T>((value: T) => value >= comparisonValue);
 }
 
 export function lessThanOrEqualTo<T extends number, U extends number>(
   comparisonValue: U,
 ): Predicate<T> {
-  return anyOf([
-    lessThan<number, number>(comparisonValue),
-    equalTo<number>(comparisonValue)
-  ]);
+  return Predicate.of<T>((value: T) => value <= comparisonValue);
 }
 
 export function withinBound<T extends number, U extends number>(
   lowerBound: U,
   upperBound: U,
 ): Predicate<T> {
-  return allOf([
-    greaterThanOrEqualTo<number, number>(lowerBound),
-    lessThanOrEqualTo<number, number>(upperBound)
-  ]);
+  return Predicate.of<T>(
+    (value: T) => value >= lowerBound && value <= upperBound,
+  );
 }
 
 export function negative<T extends number>(): Predicate<T> {
@@ -51,10 +44,11 @@ export function positive<T extends number>(): Predicate<T> {
 }
 
 export function divisibleBy<T extends number, U extends number>(
-  divisor: U
+  divisor: U,
 ): Predicate<T> {
-  return Predicate.from<T, number>((value: T) => value % divisor,
-    equalTo<number>(0)
+  return Predicate.from<T, number>(
+    (value: T) => value % divisor,
+    equalTo<number>(0),
   );
 }
 
@@ -63,5 +57,5 @@ export function even<T extends number>(): Predicate<T> {
 }
 
 export function odd<T extends number>(): Predicate<T> {
-  return not<T>(even<T>())
+  return not<T>(even<T>());
 }

@@ -13,18 +13,19 @@ export class Predicate<T> {
 
   public and<U>(other: Predicate<U>): Predicate<T & U> {
     return new Predicate<T & U>(
-      (value: T & U) => this.test(value) && other.test(value),
+      (value: T & U) => this.#predicateFn(value) && other.#predicateFn(value),
     );
   }
 
   public or<U>(other: Predicate<U>): Predicate<T | U> {
     return new Predicate<T | U>(
-      (value: T | U) => this.test(value as T) || other.test(value as U),
+      (value: T | U) =>
+        this.#predicateFn(value as T) || other.#predicateFn(value as U),
     );
   }
 
   public not(): Predicate<T> {
-    return new Predicate<T>((value: T) => !this.test(value));
+    return new Predicate<T>((value: T) => !this.#predicateFn(value));
   }
 
   public static of<T>(predicateFn: PredicateFunction<T>): Predicate<T> {
@@ -33,16 +34,10 @@ export class Predicate<T> {
 
   static from<T, U>(
     mapperFn: (value: T) => U,
-    predicateOrMapperFn: Predicate<U> | ((value: T) => Predicate<U>),
+    predicateOrMapperFn: Predicate<U>,
   ): Predicate<T> {
-    if (predicateOrMapperFn instanceof Predicate) {
-      return new Predicate<T>((value: T) =>
-        predicateOrMapperFn.test(mapperFn(value)),
-      );
-    } else {
-      return new Predicate<T>((value: T) =>
-        predicateOrMapperFn(value).test(mapperFn(value)),
-      );
-    }
+    return new Predicate<T>((value: T) =>
+      predicateOrMapperFn.#predicateFn(mapperFn(value)),
+    );
   }
 }
