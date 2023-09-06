@@ -13,13 +13,13 @@ export function not<T>(predicate: Predicate<T>): Predicate<T> {
 
 export function allOf<T>(predicates: Array<Predicate<T>>): Predicate<T> {
   return Predicate.of<T>((value: T) =>
-    predicates.every((pred) => pred.test(value)),
+    predicates.every((pred: Predicate<T>) => pred.test(value)),
   );
 }
 
 export function anyOf<T>(predicates: Array<Predicate<T>>): Predicate<T> {
   return Predicate.of<T>((value: T) =>
-    predicates.some((pred) => pred.test(value)),
+    predicates.some((pred: Predicate<T>) => pred.test(value)),
   );
 }
 
