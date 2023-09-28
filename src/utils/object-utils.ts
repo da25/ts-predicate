@@ -14,24 +14,30 @@ export function isUndefined<T>(): Predicate<T | undefined> {
   return equalTo<T | undefined>(undefined);
 }
 
-export function havingProperty<T, K extends Exclude<keyof T, FunctionKeys<T>>>(
-  property: K,
-  propertyPredicate: Predicate<T[K]>,
-): Predicate<T> {
+export function hasProperty<
+  T,
+  K extends Exclude<keyof T, FunctionKeys<T>> = Exclude<
+    keyof T,
+    FunctionKeys<T>
+  >,
+>(property: K, propertyPredicate: Predicate<T[K]>): Predicate<T> {
   return Predicate.from<T, T[K]>(
     (value: T) => value[property],
     propertyPredicate,
   );
 }
 
-export function havingPropertyPredicate<
+export function hasPropertyPredicate<
   T,
-  K extends Exclude<BooleanKeys<T>, FunctionKeys<T>>,
+  K extends Exclude<BooleanKeys<T>, FunctionKeys<T>> = Exclude<
+    BooleanKeys<T>,
+    FunctionKeys<T>
+  >,
 >(property: K): Predicate<T> {
-  return havingProperty<T, K>(property, asPredicate());
+  return hasProperty<T, K>(property, asPredicate());
 }
 
-export function invokingProperty<T, K extends KeyTypes<T, () => unknown>>(
+export function invokeProperty<T, K extends KeyTypes<T, () => unknown>>(
   functionName: K,
   propertyPredicate: Predicate<ReturnTypeOf<T, typeof functionName>>,
 ): Predicate<T> {
@@ -42,9 +48,9 @@ export function invokingProperty<T, K extends KeyTypes<T, () => unknown>>(
   );
 }
 
-export function invokingPropertyPredicate<
+export function invokePropertyPredicate<
   T,
   K extends Extract<KeyTypes<T, () => unknown>, KeyTypes<T, () => boolean>>,
 >(functionName: K): Predicate<T> {
-  return invokingProperty<T, K>(functionName, asPredicate());
+  return invokeProperty<T, K>(functionName, asPredicate());
 }

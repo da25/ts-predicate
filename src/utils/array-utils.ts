@@ -1,5 +1,5 @@
 import { Predicate } from '../predicate.ts';
-import { equalTo, havingProperty } from './object-utils.ts';
+import { equalTo, hasProperty } from './object-utils.ts';
 import { greaterThanOrEqualTo, lessThanOrEqualTo } from './number-utils.ts';
 import { not } from './predicate-util.ts';
 
@@ -8,7 +8,7 @@ export function hasSize<T>(
 ): Predicate<Array<T>> {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  return havingProperty<Array<T>, 'length'>('length', sizePredicate);
+  return hasProperty<Array<T>, 'length'>('length', sizePredicate);
 }
 
 export function isEmptyArray<T>(): Predicate<Array<T>> {
@@ -21,14 +21,18 @@ export function everyItem<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
   );
 }
 
-export function someItems<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
+export function anyItem<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
   return Predicate.of<Array<T>>((value: Array<T>) =>
     value.some((item: T) => itemPredicate.test(item)),
   );
 }
 
-export function noneItems<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
-  return not(someItems(itemPredicate));
+export function noneItem<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
+  return not(anyItem(itemPredicate));
+}
+
+export function oneItem<T>(itemPredicate: Predicate<T>): Predicate<Array<T>> {
+  return countItems<T>(itemPredicate, equalTo(1));
 }
 
 export function atLeastItems<T>(
@@ -48,7 +52,7 @@ export function atMostItems<T>(
 export function includesItem<T>(
   itemPredicate: Predicate<T>,
 ): Predicate<Array<T>> {
-  return someItems<T>(itemPredicate);
+  return anyItem<T>(itemPredicate);
 }
 
 export function countItems<T>(
@@ -63,5 +67,11 @@ export function countItems<T>(
         0,
       ),
     countPredicate,
+  );
+}
+
+export function hasDistinctItems<T>(): Predicate<Array<T>> {
+  return Predicate.of<Array<T>>(
+    (value: Array<T>) => new Set(value).size === value.length,
   );
 }

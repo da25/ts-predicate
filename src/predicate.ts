@@ -8,16 +8,20 @@ export class Predicate<T> {
   }
 
   public test(value: T): boolean {
-    return this.#predicateFn(value);
+    try {
+      return this.#predicateFn(value);
+    } catch (e) {
+      return false;
+    }
   }
 
-  public and<U>(other: Predicate<U>): Predicate<T & U> {
+  public and<U = T>(other: Predicate<U>): Predicate<T & U> {
     return new Predicate<T & U>(
       (value: T & U) => this.#predicateFn(value) && other.#predicateFn(value),
     );
   }
 
-  public or<U>(other: Predicate<U>): Predicate<T | U> {
+  public or<U = T>(other: Predicate<U>): Predicate<T | U> {
     return new Predicate<T | U>(
       (value: T | U) =>
         this.#predicateFn(value as T) || other.#predicateFn(value as U),
