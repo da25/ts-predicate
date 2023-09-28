@@ -6,15 +6,16 @@ import {
   includesItem,
   noneItems,
   someItems,
-} from '../src/utils/array-utils.js';
+} from '../src/utils/array-utils.ts';
 import {
   even,
   greaterThan,
   lessThan,
   withinBound,
-} from '../src/utils/number-utils.js';
-import { equalTo } from '../src/utils/object-utils.js';
-import { allOf } from '../src/utils/predicate-util.js';
+} from '../src/utils/number-utils.ts';
+import { equalTo, invokingPropertyPredicate } from '../src/utils/object-utils.ts';
+import { allOf } from '../src/utils/predicate-util.ts';
+import { Something } from '../src/types.ts';
 
 describe('predicates', () => {
   let arr: number[];
@@ -38,6 +39,22 @@ describe('predicates', () => {
   it('should work with complex predicates', () => {
     expect(
       allOf([everyItem(withinBound(0, 10)), someItems(even())]).test(arr),
+    ).toBeTruthy();
+  });
+
+  it('havingPropertyPredicate', () => {
+    expect(
+      invokingPropertyPredicate<Something, 'isFinal'>('isFinal').test({
+        name: 'g',
+        get isReady() {
+          return true;
+        },
+        value: 4,
+        isEmpty: false,
+        getValue: () => 4,
+        double: (val: number) => val * 2,
+        isFinal: () => true
+      }),
     ).toBeTruthy();
   });
 

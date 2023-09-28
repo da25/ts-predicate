@@ -1,12 +1,14 @@
-import { Predicate } from '../predicate.js';
-import { equalTo, hasProperty } from './object-utils.js';
-import { greaterThanOrEqualTo, lessThanOrEqualTo } from './number-utils.js';
-import { not } from './predicate-util.js';
+import { Predicate } from '../predicate.ts';
+import { equalTo, havingProperty } from './object-utils.ts';
+import { greaterThanOrEqualTo, lessThanOrEqualTo } from './number-utils.ts';
+import { not } from './predicate-util.ts';
 
 export function hasSize<T>(
   sizePredicate: Predicate<number>,
 ): Predicate<Array<T>> {
-  return hasProperty<Array<T>, 'length'>('length', sizePredicate);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  return havingProperty<Array<T>, 'length'>('length', sizePredicate);
 }
 
 export function isEmptyArray<T>(): Predicate<Array<T>> {

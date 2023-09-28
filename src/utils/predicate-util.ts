@@ -1,8 +1,22 @@
-import { Predicate } from '../predicate.js';
-import { PredicateFunction } from '../types.js';
-import { XOR } from 'ts-xor';
-import { equalTo } from './object-utils.js';
-import { greaterThanOrEqualTo, lessThanOrEqualTo } from './number-utils.js';
+import { Predicate } from '../predicate.ts';
+import { PredicateFunction, XOR } from '../types.ts';
+import { equalTo } from './object-utils.ts';
+import { greaterThanOrEqualTo, lessThanOrEqualTo } from './number-utils.ts';
+
+export function truePredicate<T = unknown>(): Predicate<T> {
+  return Predicate.of<T>(() => true);
+}
+
+export function falsePredicate<T = unknown>(): Predicate<T> {
+  return Predicate.of<T>(() => false);
+}
+
+export function asPredicate<T>(): Predicate<T> {
+  return Predicate.of<T>((value: T) => Boolean(value));
+}
+export function predicate<T>(predicateFn: PredicateFunction<T>): Predicate<T> {
+  return Predicate.of<T>(predicateFn);
+}
 
 export function and<T, U>(
   predicate1: Predicate<T>,
@@ -20,18 +34,6 @@ export function or<T, U>(
 
 export function not<T>(predicate: Predicate<T>): Predicate<T> {
   return predicate.not();
-}
-
-export function predicate<T>(predicateFn: PredicateFunction<T>): Predicate<T> {
-  return Predicate.of<T>(predicateFn);
-}
-
-export function truePredicate<T = unknown>(): Predicate<T> {
-  return Predicate.of<T>(() => true);
-}
-
-export function falsePredicate<T = unknown>(): Predicate<T> {
-  return Predicate.of<T>(() => false);
 }
 
 export function then<T, U>(
@@ -104,9 +106,12 @@ export function either<T, U>(
   predicate1: Predicate<XOR<T, U>>,
   predicate2: Predicate<XOR<T, U>>,
 ): Predicate<T | U> {
-  return Predicate.of<T | U>(
-    (value: T | U) => predicate1.test(value) !== predicate2.test(value),
-  );
+  return oneOf<XOR<T, U>>([predicate1, predicate2]);
 }
 
-// export function neither()
+export function neither<T, U>(
+  predicate1: Predicate<T>,
+  predicate2: Predicate<U>,
+): Predicate<T | U> {
+  return noneOf<T | U>([predicate1, predicate2]);
+}

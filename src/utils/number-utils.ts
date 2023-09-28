@@ -1,6 +1,6 @@
-import { Predicate } from '../predicate.js';
-import { equalTo } from './object-utils.js';
-import { not } from './predicate-util.js';
+import { Predicate } from '../predicate.ts';
+import { equalTo } from './object-utils.ts';
+import { not } from './predicate-util.ts';
 
 export function lessThan<T extends number, U extends number>(
   comparisonValue: U,

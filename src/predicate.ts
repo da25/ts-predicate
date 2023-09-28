@@ -1,4 +1,4 @@
-import { PredicateFunction } from './types.js';
+import { PredicateFunction } from './types.ts';
 
 export class Predicate<T> {
   readonly #predicateFn: PredicateFunction<T>;
@@ -34,10 +34,10 @@ export class Predicate<T> {
 
   static from<T, U>(
     mapperFn: (value: T) => U,
-    predicateOrMapperFn: Predicate<U>,
+    predicate: Predicate<U>,
   ): Predicate<T> {
     return new Predicate<T>((value: T) =>
-      predicateOrMapperFn.#predicateFn(mapperFn(value)),
+      predicate.#predicateFn(mapperFn(value)),
     );
   }
 }
