@@ -25,7 +25,7 @@ export interface Something {
   isEmpty: boolean;
   getValue: () => number;
   double: (val: number) => number;
-  isFinal: () => boolean
+  isFinal: () => boolean;
 }
 
 export type KeyTypes<T, KeyType> = {
@@ -53,3 +53,31 @@ export type ReturnTypeOf<T, K extends keyof T> = T[K] extends (
 ) => infer R
   ? R
   : never;
+
+export interface Announcement {
+  id: string;
+  modifiedByUserName?: string;
+  senderOrgAnid?: string;
+  senderOrgName?: string;
+  receiverType?: 'ALL_RELATED' | 'ORG_ANID' | 'GROUP_ID' | 'REGION';
+  senderType?: 'SYSTEM' | 'SUPPLIER' | 'BUYER';
+  announcementStatus?: 'PUBLISHED' | 'FAILED' | 'PUBLISHING' | 'DRAFT';
+  receivers?: string[];
+  contents: AnnouncementContent[];
+}
+
+export interface AnnouncementContent {
+  id?: string;
+  title?: string;
+  description?: string;
+  isDefault: boolean;
+  locale?: string;
+  attachments?: AnnouncementAttachment[];
+}
+
+export interface AnnouncementAttachment {
+  id?: string;
+  attachmentBlobId?: string;
+  attachmentName?: string;
+  attachmentSize?: number;
+}
