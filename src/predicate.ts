@@ -11,6 +11,7 @@ export class Predicate<T> {
     try {
       return this.#predicateFn(value);
     } catch (e) {
+      console.error(e);
       return false;
     }
   }

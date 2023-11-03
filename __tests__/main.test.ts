@@ -18,17 +18,69 @@ import {
 import {
   equalTo,
   hasProperty,
-  invokePropertyPredicate,
+  invokePropertyAsPredicate,
+  predicateRecord,
 } from '../src/utils/object-utils.ts';
-import { allOf, anyOf, not, then } from '../src/utils/predicate-util.ts';
 import {
-  Announcement,
-  AnnouncementAttachment,
-  AnnouncementContent,
-  Something,
-} from '../src/types.ts';
-import { Predicate } from '../src/predicate.js';
-import { isBlank } from '../src/utils/string-utils.js';
+  allOf,
+  anyOf,
+  asPredicate,
+  not,
+  then,
+} from '../src/utils/predicate-util.ts';
+import { Predicate } from '../src/predicate.ts';
+import { isBlank } from '../src/utils/string-utils.ts';
+import { PredicateRecursiveRecord } from '../src/types.ts';
+
+interface Something {
+  name: string;
+  value: number;
+  isReady: boolean;
+  isEmpty: boolean;
+  getValue: () => number;
+  double: (val: number) => number;
+  isFinal: () => boolean;
+}
+
+interface Record1 {
+  name: string;
+  value: number;
+  isReady: boolean;
+  innerRecord: Record2;
+}
+
+interface Record2 {
+  order: number;
+  isEmpty: boolean;
+}
+
+interface Announcement {
+  id: string;
+  modifiedByUserName?: string;
+  senderOrgAnid?: string;
+  senderOrgName?: string;
+  receiverType?: 'ALL_RELATED' | 'ORG_ANID' | 'GROUP_ID' | 'REGION';
+  senderType?: 'SYSTEM' | 'SUPPLIER' | 'BUYER';
+  announcementStatus?: 'PUBLISHED' | 'FAILED' | 'PUBLISHING' | 'DRAFT';
+  receivers?: string[];
+  contents: AnnouncementContent[];
+}
+
+interface AnnouncementContent {
+  id?: string;
+  title?: string;
+  description?: string;
+  isDefault: boolean;
+  locale?: string;
+  attachments?: AnnouncementAttachment[];
+}
+
+interface AnnouncementAttachment {
+  id?: string;
+  attachmentBlobId?: string;
+  attachmentName?: string;
+  attachmentSize?: number;
+}
 
 describe('predicates', () => {
   let arr: number[];
@@ -57,7 +109,7 @@ describe('predicates', () => {
 
   it('havingPropertyPredicate', () => {
     expect(
-      invokePropertyPredicate<Something, 'isFinal'>('isFinal').test({
+      invokePropertyAsPredicate<Something, 'isFinal'>('isFinal').test({
         name: 'g',
         get isReady() {
           return true;
@@ -140,5 +192,29 @@ describe('predicates', () => {
     };
 
     expect(ancPred.test(anc)).toBeTruthy();
+  });
+
+  it('should test predicate records', () => {
+    const pred: Predicate<Record1> = predicateRecord<Record1>({
+      name: not(isBlank()),
+      value: greaterThan(5),
+      isReady: asPredicate(),
+      innerRecord: {
+        order: withinBound(2, 7),
+        isEmpty: asPredicate(),
+      },
+    });
+
+    expect(
+      pred.test({
+        name: 'hello',
+        value: 10,
+        isReady: true,
+        innerRecord: {
+          order: 5,
+          isEmpty: true,
+        },
+      }),
+    ).toBeTruthy();
   });
 });

@@ -1,6 +1,13 @@
 import { Predicate } from '../predicate.ts';
-import { BooleanKeys, FunctionKeys, KeyTypes, ReturnTypeOf } from '../types.ts';
-import { asPredicate } from './predicate-util.ts';
+import {
+  BooleanKeys,
+  FunctionKeys,
+  KeyTypes,
+  PredicateRecursiveRecord,
+  RecursiveRecord,
+  ReturnTypeOf,
+} from '../types.ts';
+import { allOf, asPredicate } from './predicate-util.ts';
 
 export function equalTo<T>(comparisonValue: T): Predicate<T> {
   return Predicate.of<T>((value: T) => value === comparisonValue);
@@ -27,7 +34,7 @@ export function hasProperty<
   );
 }
 
-export function hasPropertyPredicate<
+export function hasPropertyAsPredicate<
   T,
   K extends Exclude<BooleanKeys<T>, FunctionKeys<T>> = Exclude<
     BooleanKeys<T>,
@@ -48,9 +55,25 @@ export function invokeProperty<T, K extends KeyTypes<T, () => unknown>>(
   );
 }
 
-export function invokePropertyPredicate<
+export function invokePropertyAsPredicate<
   T,
   K extends Extract<KeyTypes<T, () => unknown>, KeyTypes<T, () => boolean>>,
 >(functionName: K): Predicate<T> {
   return invokeProperty<T, K>(functionName, asPredicate());
+}
+
+export function predicateRecord<T extends RecursiveRecord<string, any>>(
+  predicateRecordObj: PredicateRecursiveRecord<T>,
+): Predicate<T> {
+  return allOf<T>(
+    Object.entries(predicateRecordObj).map<Predicate<T>>(([key, value]) => {
+      const valuePredicate: Predicate<typeof value> =
+        value instanceof Predicate
+          ? value
+          : predicateRecord<typeof value>(value);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      return hasProperty<T>(key, valuePredicate);
+    }),
+  );
 }

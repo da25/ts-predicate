@@ -1,3 +1,5 @@
+import { Predicate } from './predicate.ts';
+
 export type PredicateFunction<T> = (value: T) => boolean;
 
 export type Prettify<T> = {
@@ -17,16 +19,6 @@ export type ReducerFunction<T, U> = (
   currentIndex: number,
   array: T[],
 ) => U;
-
-export interface Something {
-  name: string;
-  value: number;
-  isReady: boolean;
-  isEmpty: boolean;
-  getValue: () => number;
-  double: (val: number) => number;
-  isFinal: () => boolean;
-}
 
 export type KeyTypes<T, KeyType> = {
   [K in keyof T]: T[K] extends KeyType ? K : never;
@@ -54,30 +46,10 @@ export type ReturnTypeOf<T, K extends keyof T> = T[K] extends (
   ? R
   : never;
 
-export interface Announcement {
-  id: string;
-  modifiedByUserName?: string;
-  senderOrgAnid?: string;
-  senderOrgName?: string;
-  receiverType?: 'ALL_RELATED' | 'ORG_ANID' | 'GROUP_ID' | 'REGION';
-  senderType?: 'SYSTEM' | 'SUPPLIER' | 'BUYER';
-  announcementStatus?: 'PUBLISHED' | 'FAILED' | 'PUBLISHING' | 'DRAFT';
-  receivers?: string[];
-  contents: AnnouncementContent[];
-}
+export type PredicateRecursiveRecord<T> = T extends RecursiveRecord<string, any>
+  ? { [K in keyof T]: Predicate<T[K]> | PredicateRecursiveRecord<T[K]> }
+  : never;
 
-export interface AnnouncementContent {
-  id?: string;
-  title?: string;
-  description?: string;
-  isDefault: boolean;
-  locale?: string;
-  attachments?: AnnouncementAttachment[];
-}
-
-export interface AnnouncementAttachment {
-  id?: string;
-  attachmentBlobId?: string;
-  attachmentName?: string;
-  attachmentSize?: number;
-}
+export type RecursiveRecord<K extends keyof any, T> = {
+  [P in K]: T | RecursiveRecord<K, T>;
+};
