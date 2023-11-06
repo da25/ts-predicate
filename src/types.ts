@@ -2,6 +2,18 @@ import { Predicate } from './predicate.ts';
 
 export type PredicateFunction<T> = (value: T) => boolean;
 
+export type Constructable<T> = new (...args: any[]) => T;
+
+export type TypeOfString =
+  | 'string'
+  | 'number'
+  | 'boolean'
+  | 'symbol'
+  | 'undefined'
+  | 'object'
+  | 'function'
+  | 'bigint';
+
 export type Prettify<T> = {
   [K in keyof T]: T[K];
 } & NonNullable<unknown>;

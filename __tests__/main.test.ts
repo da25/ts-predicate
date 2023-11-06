@@ -19,7 +19,7 @@ import {
   equalTo,
   hasProperty,
   invokePropertyAsPredicate,
-  predicateRecord,
+  record,
 } from '../src/utils/object-utils.ts';
 import {
   allOf,
@@ -30,7 +30,6 @@ import {
 } from '../src/utils/predicate-util.ts';
 import { Predicate } from '../src/predicate.ts';
 import { isBlank } from '../src/utils/string-utils.ts';
-import { PredicateRecursiveRecord } from '../src/types.ts';
 
 interface Something {
   name: string;
@@ -90,7 +89,6 @@ describe('predicates', () => {
   });
 
   it('test array utils', () => {
-    const arr: number[] = [2, 5, 9, 4, 7];
     expect(includesItem(equalTo(1)).test(arr)).toBeFalsy();
     expect(includesItem(equalTo(5)).test(arr)).toBeTruthy();
     expect(everyItem(lessThan(10)).test(arr)).toBeTruthy();
@@ -195,7 +193,7 @@ describe('predicates', () => {
   });
 
   it('should test predicate records', () => {
-    const pred: Predicate<Record1> = predicateRecord<Record1>({
+    const pred: Predicate<Record1> = record<Record1>({
       name: not(isBlank()),
       value: greaterThan(5),
       isReady: asPredicate(),

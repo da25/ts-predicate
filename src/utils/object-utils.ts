@@ -1,11 +1,13 @@
 import { Predicate } from '../predicate.ts';
 import {
   BooleanKeys,
+  Constructable,
   FunctionKeys,
   KeyTypes,
   PredicateRecursiveRecord,
   RecursiveRecord,
   ReturnTypeOf,
+  TypeOfString,
 } from '../types.ts';
 import { allOf, asPredicate } from './predicate-util.ts';
 
@@ -19,6 +21,20 @@ export function isNull<T>(): Predicate<T | null> {
 
 export function isUndefined<T>(): Predicate<T | undefined> {
   return equalTo<T | undefined>(undefined);
+}
+
+export function instanceOf<T, U extends T = T>(
+  constructor: Constructable<U>,
+): Predicate<T> {
+  return Predicate.of<T>(
+    (value: T): value is U => value instanceof constructor,
+  );
+}
+
+export function typeOf<T>(typeString: TypeOfString): Predicate<T> {
+  return Predicate.of<T>(
+    (value: unknown): value is T => typeof value === typeString,
+  );
 }
 
 export function hasProperty<
@@ -62,15 +78,13 @@ export function invokePropertyAsPredicate<
   return invokeProperty<T, K>(functionName, asPredicate());
 }
 
-export function predicateRecord<T extends RecursiveRecord<string, any>>(
+export function record<T extends RecursiveRecord<string, any>>(
   predicateRecordObj: PredicateRecursiveRecord<T>,
 ): Predicate<T> {
   return allOf<T>(
     Object.entries(predicateRecordObj).map<Predicate<T>>(([key, value]) => {
       const valuePredicate: Predicate<typeof value> =
-        value instanceof Predicate
-          ? value
-          : predicateRecord<typeof value>(value);
+        value instanceof Predicate ? value : record<typeof value>(value);
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       return hasProperty<T>(key, valuePredicate);
