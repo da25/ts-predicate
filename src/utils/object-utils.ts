@@ -82,12 +82,13 @@ export function record<T extends RecursiveRecord<string, any>>(
   predicateRecordObj: PredicateRecursiveRecord<T>,
 ): Predicate<T> {
   return allOf<T>(
-    Object.entries(predicateRecordObj).map<Predicate<T>>(([key, value]) => {
-      const valuePredicate: Predicate<typeof value> =
-        value instanceof Predicate ? value : record<typeof value>(value);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return hasProperty<T>(key, valuePredicate);
-    }),
+    Object.entries(predicateRecordObj)
+      .map<Predicate<T>>(([key, value]) => {
+        const valuePredicate: Predicate<typeof value> =
+          value instanceof Predicate ? value : record<typeof value>(value);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return hasProperty<T>(key, valuePredicate);
+      })
   );
 }
