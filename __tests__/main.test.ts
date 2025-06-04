@@ -8,7 +8,13 @@ import {
   reduceItems,
   someItems,
 } from '../src/utils/array-utils.js';
-import { even, greaterThan, lessThan, withinBound, negative } from '../src/utils/number-utils.js';
+import {
+  even,
+  greaterThan,
+  lessThan,
+  withinBound,
+  negative,
+} from '../src/utils/number-utils.js';
 import { equalTo } from '../src/utils/object-utils.js';
 import { allOf, noneOf } from '../src/utils/predicate-util.js';
 
@@ -61,7 +67,6 @@ describe('predicates', () => {
     expect(sumEqualsSix.test(numbers)).toBeTruthy();
     expect(numbers).toEqual([1, 2, 3]);
   });
-
   it('reduceItems throws on empty array without initial value', () => {
     const reducer = (sum: number, val: number): number => sum + val;
     const predicate = reduceItems<number, number>(equalTo(0), reducer);
