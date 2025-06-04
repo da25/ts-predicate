@@ -8,9 +8,16 @@ import {
   reduceItems,
   someItems,
 } from '../src/utils/array-utils.js';
-import { even, greaterThan, lessThan, withinBound } from '../src/utils/number-utils.js';
+import {
+  even,
+  greaterThan,
+  lessThan,
+  withinBound,
+  negative,
+} from '../src/utils/number-utils.js';
 import { equalTo } from '../src/utils/object-utils.js';
-import { allOf } from '../src/utils/predicate-util.js';
+import { allOf, noneOf } from '../src/utils/predicate-util.js';
+import { reduceItems } from '../src/utils/array-utils.js';
 
 describe('predicates', () => {
   let arr: number[];
@@ -52,6 +59,25 @@ describe('predicates', () => {
     ).toBeTruthy()
   });
 
+  it('reduceItems throws on empty array without initial value', () => {
+    const reducer = (sum: number, val: number): number => sum + val;
+    const predicate = reduceItems<number, number>(equalTo(0), reducer);
+    expect(() => predicate.test([])).toThrow('No initialValue provided and array is empty');
+  });
+
+  it('handles negative number bounds', () => {
+    expect(greaterThan(-10).test(-5)).toBeTruthy();
+    expect(withinBound(-10, -1).test(-5)).toBeTruthy();
+    expect(withinBound(-10, -1).test(0)).toBeFalsy();
+    expect(negative<number>().test(-3)).toBeTruthy();
+  });
+
+  it('uses noneOf to combine predicates', () => {
+    const pred = noneOf<number>([greaterThan(10), lessThan(0)]);
+    expect(pred.test(5)).toBeTruthy();
+    expect(pred.test(11)).toBeFalsy();
+  });
+  
   it('reduceItems should not mutate array when initial value is omitted', () => {
     const numbers = [1, 2, 3];
     const sumEqualsSix = reduceItems<number, number>(
