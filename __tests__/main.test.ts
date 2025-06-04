@@ -40,7 +40,7 @@ describe('predicates', () => {
     ).toBeTruthy();
   });
 
-  it('should test everyItem(withinBound))', () => {
+  it('should test everyItem(withinBound)', () => {
     expect(
       everyItem(withinBound(0, 10)).test(arr)
     ).toBeTruthy()
