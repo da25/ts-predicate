@@ -47,7 +47,7 @@ describe('predicates', () => {
 
   it('should test someItems(even())', () => {
     expect(
-      someItems(even())
+      someItems(even()).test(arr)
     ).toBeTruthy()
   });
 });
