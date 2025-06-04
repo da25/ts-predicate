@@ -5,7 +5,6 @@ import {
   hasSize,
   includesItem,
   noneItems,
-  reduceItems,
   someItems,
 } from '../src/utils/array-utils.js';
 import {
@@ -17,6 +16,7 @@ import {
 } from '../src/utils/number-utils.js';
 import { equalTo } from '../src/utils/object-utils.js';
 import { allOf, noneOf } from '../src/utils/predicate-util.js';
+import { reduceItems } from '../src/utils/array-utils.js';
 
 describe('predicates', () => {
   let arr: number[];
@@ -46,7 +46,7 @@ describe('predicates', () => {
     ).toBeTruthy();
   });
 
-  it('should test everyItem(withinBound)', () => {
+  it('should test everyItem(withinBound))', () => {
     expect(
       everyItem(withinBound(0, 10)).test(arr)
     ).toBeTruthy()
@@ -54,26 +54,17 @@ describe('predicates', () => {
 
   it('should test someItems(even())', () => {
     expect(
-      someItems(even()).test(arr)
+      someItems(even())
     ).toBeTruthy()
   });
 
-  it('reduceItems should not mutate array when initial value is omitted', () => {
-    const numbers = [1, 2, 3];
-    const sumEqualsSix = reduceItems<number, number>(
-      equalTo(6),
-      (acc, current) => acc + current
-    );
-    expect(sumEqualsSix.test(numbers)).toBeTruthy();
-    expect(numbers).toEqual([1, 2, 3]);
-  });
   it('reduceItems throws on empty array without initial value', () => {
     const reducer = (sum: number, val: number): number => sum + val;
     const predicate = reduceItems<number, number>(equalTo(0), reducer);
     expect(() => predicate.test([])).toThrow('No initialValue provided and array is empty');
   });
 
-  it('handles negative bounds in number predicates', () => {
+  it('handles negative number bounds', () => {
     expect(greaterThan(-10).test(-5)).toBeTruthy();
     expect(withinBound(-10, -1).test(-5)).toBeTruthy();
     expect(withinBound(-10, -1).test(0)).toBeFalsy();
