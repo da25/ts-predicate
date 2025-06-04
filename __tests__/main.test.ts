@@ -40,7 +40,7 @@ describe('predicates', () => {
     ).toBeTruthy();
   });
 
-  it('should test everyItem(withinBound))', () => {
+  it('should test everyItem(withinBound)', () => {
     expect(
       everyItem(withinBound(0, 10)).test(arr)
     ).toBeTruthy()
@@ -48,14 +48,24 @@ describe('predicates', () => {
 
   it('should test someItems(even())', () => {
     expect(
-      someItems(even())
+      someItems(even()).test(arr)
     ).toBeTruthy()
   });
 
+  it('reduceItems should not mutate array when initial value is omitted', () => {
+    const numbers = [1, 2, 3];
+    const sumEqualsSix = reduceItems<number, number>(
+      equalTo(6),
+      (acc, current) => acc + current
+    );
+    expect(sumEqualsSix.test(numbers)).toBeTruthy();
+    expect(numbers).toEqual([1, 2, 3]);
+  });
+
   it('reduceItems throws on empty array without initial value', () => {
-    const reducer = (sum: number, val: number) => sum + val;
+    const reducer = (sum: number, val: number): number => sum + val;
     const predicate = reduceItems<number, number>(equalTo(0), reducer);
-    expect(() => predicate.test([])).toThrowError('No initialValue provided and array is empty');
+    expect(() => predicate.test([])).toThrow('No initialValue provided and array is empty');
   });
 
   it('handles negative bounds in number predicates', () => {
