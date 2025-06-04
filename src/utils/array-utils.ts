@@ -67,13 +67,18 @@ export function reduceItems<T, U>(
   initialValue?: U,
 ): Predicate<Array<T>> {
   return Predicate.from<Array<T>, U>((value: Array<T>) => {
+    let startValue: U;
+    let remaining: Array<T> = value;
     if (initialValue === undefined || initialValue === null) {
       if (value.length > 0) {
-        initialValue = value.shift() as unknown as U;
+        startValue = value[0] as unknown as U;
+        remaining = value.slice(1);
       } else {
         throw Error('No initialValue provided and array is empty');
       }
+    } else {
+      startValue = initialValue;
     }
-    return value.reduce<U>(reducer, initialValue);
+    return remaining.reduce<U>(reducer, startValue);
   }, reducedPredicate);
 }
