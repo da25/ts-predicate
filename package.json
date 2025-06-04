@@ -1,7 +1,7 @@
 {
   "name": "ts-predicate",
   "version": "0.0.1",
-  "description": "Predicate Builder in Typescript",
+  "description": "Predicate Builder in TypeScript",
   "type": "module",
   "engines": {
     "node": ">= 18.12 <19"

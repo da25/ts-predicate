@@ -1,1 +1,1 @@
-Object-oriented, lazy & complex predicate builder for typescript
+Object-oriented, lazy & complex predicate builder for TypeScript
